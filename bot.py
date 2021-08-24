@@ -58,13 +58,14 @@ async def respond(event):
                     projects = await res.json()
                     if type(projects) == list:
                         for project in projects:
-                            response = await ld.messages.create(
-                                event['data']['workspace_id'],
-                                event['data']['message']['conversation_id'],
-                                project['name'],
-                                thread_root_id=thread_root_id or message_id,
-                                direct_reply_message_id=thread_root_id and message_id
-                            )
+                            if project['visibility'] == 'private':
+                                response = await ld.messages.create(
+                                    event['data']['workspace_id'],
+                                    event['data']['message']['conversation_id'],
+                                    project['name'],
+                                    thread_root_id=thread_root_id or message_id,
+                                    direct_reply_message_id=thread_root_id and message_id
+                                )
                     else:
                         response = await ld.messages.create(
                                 event['data']['workspace_id'],
@@ -109,4 +110,3 @@ async def main():
 
 
 asyncio.run(main())
-  
